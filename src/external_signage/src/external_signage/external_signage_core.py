@@ -6,6 +6,7 @@ import json
 from std_srvs.srv import SetBool
 from ament_index_python.packages import get_package_share_directory
 import external_signage.packet_tools as packet_tools
+import uuid
 
 
 @dataclass
@@ -60,9 +61,13 @@ class DataSender:
         self._logger = node_logger
         self._delay_time = 0.02
 
+    def randomname(self):
+        u = uuid.uuid4()
+        return u.bytes
+
     def _send_heartbeat(self, data, ACK_QueryACK):
         timestamp = datetime.datetime.now()
-        name_time_packet = packet_tools.gen_name_time_packet(data.linename, timestamp, False)
+        name_time_packet = packet_tools.gen_name_time_packet(self.randomname(), timestamp, False)
         self._bus.write(name_time_packet)
         packet_tools.dump_packet(name_time_packet, None, self._protocol.SEND_COLOR)
         time.sleep(self._delay_time)
