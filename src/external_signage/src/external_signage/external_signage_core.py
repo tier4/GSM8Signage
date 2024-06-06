@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import datetime
 import time
 import serial
+import json
 from std_srvs.srv import SetBool
 from ament_index_python.packages import get_package_share_directory
 import external_signage.packet_tools as packet_tools
@@ -114,14 +115,31 @@ class ExternalSignage:
             "back": self._load_display_data(self.protocol.back, package_path),
             "side": self._load_display_data(self.protocol.side, package_path),
         }
+        self._settings_file = "/opt/pilot-auto/signage/settings.json"
+        if os.path.exists(self._settings_file):
+            with open(self._settings_file, "r") as f:
+                self._settings = json.load(f)
+        else:
+            self._settings = {"in_experiment": False}
+            with open(self._settings_file, "w") as f:
+                json.dump(self._settings, f, indent=4)
+
+        if self._settings.get("in_experiment", False):
+            self.display_signage("experiment")
+
         node.create_service(SetBool, "/signage/trigger_external", self.trigger_external_signage)
+        node.create_service(SetBool, "/signage/mode_change", self.experiment_set)
 
     def _load_display_data(self, display, package_path):
         auto_path = package_path + f"/automatic_{display.width}x{display.height}.td5"
+        experiment_path = package_path + f"/experiment_{display.width}x{display.height}.td5"
         null_path = package_path + f"/null_{display.width}x{display.height}.td5"
         return {
             "auto": packet_tools.TD5Data(
                 auto_path, display.address1, display.address2, display.height, display.width
+            ),
+            "experiment": packet_tools.TD5Data(
+                experiment_path, display.address1, display.address2, display.height, display.width
             ),
             "null": packet_tools.TD5Data(
                 null_path, display.address1, display.address2, display.height, display.width
@@ -137,14 +155,28 @@ class ExternalSignage:
         sender.send(data, ack_query_ack, ack_data_chunk)
 
     def trigger_external_signage(self, request, response):
-        if not self._external_signage_available:
-            return response
-
         if request.data:
-            for display_key in self.displays:
-                self.send_data(display_key, "auto")
-                time.sleep(1)
+            self.display_signage("auto")
         else:
-            for display_key in self.displays:
-                self.send_data(display_key, "null")
+            self.display_signage("null")
         return response
+
+    def experiment_set(self, request, response):
+        if request.data:
+            self._settings["in_experiment"] = True
+            self.display_signage("experiment")
+        else:
+            self._settings["in_experiment"] = False
+            self.display_signage("null")
+
+        with open(self._settings_file, "w") as f:
+            json.dump(self._settings, f, indent=4)
+        return response
+
+    def display_signage(self, display_file):
+        if not self._external_signage_available:
+            return
+
+        for display_key in self.displays:
+            self.send_data(display_key, display_file)
+            time.sleep(1)
