@@ -102,7 +102,7 @@ class ExternalSignage:
     def __init__(self, node):
         self.node = node
         self.protocol = Protocol()
-        package_path = get_package_share_directory("signage") + "/resource/td5_file/"
+        package_path = get_package_share_directory("external_signage") + "/resource/td5_file/"
         try:
             self.bus = serial.Serial(
                 "/dev/ttyUSB0",
@@ -137,9 +137,9 @@ class ExternalSignage:
         node.create_service(SetBool, "/signage/mode_change", self.experiment_set)
 
     def _load_display_data(self, display, package_path):
-        auto_path = package_path + f"/automatic_{display.width}x{display.height}.td5"
-        experiment_path = package_path + f"/experiment_{display.width}x{display.height}.td5"
-        null_path = package_path + f"/null_{display.width}x{display.height}.td5"
+        auto_path = package_path + f"automatic_{display.width}x{display.height}.td5"
+        experiment_path = package_path + f"experiment_{display.width}x{display.height}.td5"
+        null_path = package_path + f"null_{display.width}x{display.height}.td5"
         return {
             "auto": packet_tools.TD5Data(
                 auto_path, display.address1, display.address2, display.height, display.width
