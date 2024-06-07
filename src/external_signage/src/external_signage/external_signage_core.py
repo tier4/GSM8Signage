@@ -3,6 +3,7 @@ import datetime
 import time
 import serial
 import json
+import os
 from std_srvs.srv import SetBool
 from ament_index_python.packages import get_package_share_directory
 import external_signage.packet_tools as packet_tools
@@ -120,7 +121,7 @@ class ExternalSignage:
             "back": self._load_display_data(self.protocol.back, package_path),
             "side": self._load_display_data(self.protocol.side, package_path),
         }
-        self._settings_file = "/opt/pilot-auto/signage/settings.json"
+        self._settings_file = "/home/" + os.environ.get("USER") + "/settings.json"
         if os.path.exists(self._settings_file):
             with open(self._settings_file, "r") as f:
                 self._settings = json.load(f)
