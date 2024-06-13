@@ -161,6 +161,9 @@ class ExternalSignage:
         sender.send(data, ack_query_ack, ack_data_chunk)
 
     def trigger_external_signage(self, request, response):
+        if self._settings["in_experiment"]:
+            return response
+
         if request.data:
             self.display_signage("auto")
         else:
