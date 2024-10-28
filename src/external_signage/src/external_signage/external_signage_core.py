@@ -96,9 +96,12 @@ class ExternalSignage:
         self.node = node
         self.protocol = Protocol()
         package_path = get_package_share_directory("signage") + "/resource/td5_file/"
+        node.declare_parameter("serial_port", "/dev/ttyS0")
+        self._serial_port = node.get_parameter("serial_port").get_parameter_value().string_value
+
         try:
             self.bus = serial.Serial(
-                "/dev/ttyUSB0",
+                self._serial_port,
                 baudrate=38400,
                 parity=serial.PARITY_EVEN,
                 timeout=0.2,
