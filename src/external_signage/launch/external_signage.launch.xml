@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-  <node pkg="external_signage" exec="external_signage"  output="screen" />
+  <arg name="serial_port" default="/dev/ttyS0" />
+  <node pkg="external_signage" exec="external_signage"  output="screen">
+    <param name="serial_port" value="$(var serial_port)" />
+  </node>
 </launch>
