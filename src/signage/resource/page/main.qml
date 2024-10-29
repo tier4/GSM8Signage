@@ -19,6 +19,11 @@ Window {
         visible: viewController.view_mode === "emergency_stopped"
     }
 
+    Disconnected {
+        id: disconnected
+        visible: viewController.view_mode === "disconnected"
+    }
+
     SlowStopView {
         id: slowStopView
         visible: viewController.view_mode === "slow_stop"
