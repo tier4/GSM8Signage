@@ -426,7 +426,10 @@ class RouteHandler:
                         self._announced_depart = True
             elif self._is_driving:
                 # handle text and announce while bus is running
-                if self._autoware.information.goal_distance < 100:
+                if (
+                    self._autoware.information.goal_distance < 100
+                    and self._autoware.information.goal_distance > 0
+                ):
                     # display text and announce if the goal is within 100m
                     self._display_phrase = utils.handle_phrase("arriving")
                     if not self._announced_arrive:
