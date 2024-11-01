@@ -2,10 +2,12 @@ signage:
   ros__parameters:
     signage_stand_alone: true
     ignore_emergency_stoppped: false
+    ignore_disconnected: false
     ignore_manual_driving: false
     set_goal_by_distance: false
     goal_distance: 1.0 # meter
-    check_fms_time: 5.0 # second
+    check_fms_time: 2.0 # second
+    emergency_ignore_period: 5.0 # second
     emergency_repeat_period: 180.0 # second
     accept_start: 5.0 # second
     monitor_width: 1920

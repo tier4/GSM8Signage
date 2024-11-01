@@ -11,6 +11,7 @@ from autoware_adapi_v1_msgs.msg import (
     LocalizationInitializationState,
     VelocityFactorArray,
 )
+from std_msgs.msg import String
 import signage.signage_utils as utils
 from tier4_debug_msgs.msg import Float64Stamped
 from tier4_external_api_msgs.msg import DoorStatus
@@ -28,6 +29,7 @@ class AutowareInformation:
     goal_distance: float = 1000.0
     motion_state: int = 0
     localization_init_state: int = 0
+    active_schedule: str = ""
 
 
 class AutowareInterface:
@@ -91,8 +93,15 @@ class AutowareInterface:
             self.sub_velocity_factors_callback,
             sub_qos,
         )
-        self._autoware_connection_time = self._node.get_clock().now()
-        self._node.create_timer(1, self.reset_timer)
+        self._sub_active_schedule = node.create_subscription(
+            String,
+            "/signage/active_schedule",
+            self.sub_active_schedule_callback,
+            sub_qos,
+        )
+        if not self._parameter.debug_mode:
+            self._autoware_connection_time = self._node.get_clock().now()
+            self._node.create_timer(1, self.reset_timer)
 
     def reset_timer(self):
         if utils.check_timeout(
@@ -156,3 +165,9 @@ class AutowareInterface:
             self._autoware_connection_time = self._node.get_clock().now()
         except Exception as e:
             self._node.get_logger().error("Unable to get the velocity factors, ERROR: " + str(e))
+
+    def sub_active_schedule_callback(self, msg):
+        try:
+            self.information.active_schedule = msg.data
+        except Exception as e:
+            self._node.get_logger().error("Unable to get the active schedule, ERROR: " + str(e))
