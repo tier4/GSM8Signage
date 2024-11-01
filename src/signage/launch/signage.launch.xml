@@ -1,8 +1,13 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="signage_param" default="$(find-pkg-share signage)/config/signage_param.yaml" />
+  <arg name="fms_client_param" default="$(find-pkg-share signage_fms_client)/config/fms_client_param.yaml" />
   <node pkg="signage" exec="signage"  output="screen">
     <param from="$(var signage_param)"/>
   </node>
   <node pkg="external_signage" exec="external_signage"  output="screen" />
+
+  <node pkg="signage_fms_client" exec="signage_fms_client"  output="screen" >
+    <param from="$(var fms_client_param)"/>
+  </node>
 </launch>

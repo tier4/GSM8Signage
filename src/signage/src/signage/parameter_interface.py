@@ -9,6 +9,7 @@ from dataclasses import dataclass
 class SignageParameter:
     signage_stand_alone: bool = False
     ignore_manual_driving: bool = False
+    ignore_disconnected: bool = False
     ignore_emergency: bool = False
     set_goal_by_distance: bool = False
     goal_distance: float = 1.0
@@ -17,6 +18,7 @@ class SignageParameter:
     emergency_repeat_period: float = 180.0
     monitor_width: int = 1920
     monitor_height: int = 540
+
 
 @dataclass
 class AnnounceParameter:
@@ -31,12 +33,14 @@ class AnnounceParameter:
     going_to_depart: bool = True
     going_to_arrive: bool = True
 
+
 class ParameterInterface:
     def __init__(self, node):
         self.parameter = SignageParameter()
         self.announce_settings = AnnounceParameter()
 
         node.declare_parameter("signage_stand_alone", False)
+        node.declare_parameter("ignore_disconnected", False)
         node.declare_parameter("ignore_manual_driving", False)
         node.declare_parameter("check_fms_time", 5.0)
         node.declare_parameter("accept_start", 5.0)
@@ -49,6 +53,9 @@ class ParameterInterface:
 
         self.parameter.signage_stand_alone = (
             node.get_parameter("signage_stand_alone").get_parameter_value().bool_value
+        )
+        self.parameter.ignore_disconnected = (
+            node.get_parameter("ignore_disconnected").get_parameter_value().bool_value
         )
         self.parameter.ignore_manual_driving = (
             node.get_parameter("ignore_manual_driving").get_parameter_value().bool_value
@@ -96,4 +103,3 @@ class ParameterInterface:
                 key,
                 announce_prefix[key].get_parameter_value().bool_value,
             )
-
