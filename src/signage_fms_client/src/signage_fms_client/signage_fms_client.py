@@ -10,7 +10,7 @@ from std_msgs.msg import String
 
 class FMSClient(Node):
     def __init__(self, node):
-
+        self._node = node
         node.declare_parameter("post_request_time", 8.0)
         self._post_request_time = (
             node.get_parameter("post_request_time").get_parameter_value().double_value
