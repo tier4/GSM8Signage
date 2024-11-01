@@ -2,6 +2,7 @@ signage:
   ros__parameters:
     signage_stand_alone: true
     ignore_emergency_stoppped: false
+    ignore_disconnected: false
     ignore_manual_driving: false
     set_goal_by_distance: false
     freeze_emergency: true
