@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>signage_fms_client</name>
+  <version>0.1.0</version>
+  <description>The fms client for signage</description>
+
+  <maintainer email="kahhooi.tan@tier4.jp">tkhmy</maintainer>
+
+  <license>Apache License 2.0</license>
+  <exec_depend>ament_index_python</exec_depend>
+
+  <depend>rclpy</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
