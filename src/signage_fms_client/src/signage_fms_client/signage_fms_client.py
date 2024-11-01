@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-import sys
+import os
 
 import rclpy
 from rclpy.node import Node
@@ -7,14 +7,12 @@ from rclpy.node import Node
 import requests
 from std_msgs.msg import String
 
-from signage_fms_client.signage_fms_client_core import FMSClient
-
 
 class FMSClient(Node):
     def __init__(self, node):
 
-        node.declare_parameter("post_request_time", 5.5)
-        post_request_time = (
+        node.declare_parameter("post_request_time", 8.0)
+        self._post_request_time = (
             node.get_parameter("post_request_time").get_parameter_value().double_value
         )
         self._fms_payload = {
@@ -26,7 +24,7 @@ class FMSClient(Node):
         }
         self.AUTOWARE_IP = os.getenv("AUTOWARE_IP", "localhost")
         self.schedule_pub_ = node.create_publisher(String, "/signage/active_schedule", 10)
-        self.timer = node.create_timer(post_request_time, self.pub_schedule)
+        self.timer = node.create_timer(self._post_request_time + 0.5, self.pub_schedule)
 
     def pub_schedule(self):
         try:
@@ -34,7 +32,7 @@ class FMSClient(Node):
             respond = requests.post(
                 "http://{}:4711/v1/services/order".format(self.AUTOWARE_IP),
                 json=self._fms_payload,
-                timeout=5,
+                timeout=self._post_request_time,
             )
             msg.data = respond.text
             self.schedule_pub_.publish(msg)
