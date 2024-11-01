@@ -377,9 +377,6 @@ class RouteHandler:
                 self._current_task_details.depart_time, self._node.get_clock().now().to_msg().sec
             )
 
-            self._node.get_logger().info("_reach_final: " + str(self._reach_final))
-            self._node.get_logger().info("remain_minute: " + str(remain_minute))
-
             if self._reach_final:
                 # display arrive to final station
                 self._display_phrase = utils.handle_phrase("final")
