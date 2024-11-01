@@ -1,0 +1,3 @@
+signage:
+  ros__parameters:
+    post_request_time: 5.5 # second

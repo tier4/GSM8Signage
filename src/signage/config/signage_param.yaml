@@ -6,7 +6,7 @@ signage:
     set_goal_by_distance: false
     freeze_emergency: true
     goal_distance: 1.0 # meter
-    check_fms_time: 5.0 # second
+    check_fms_time: 2.0 # second
     emergency_ignore_period: 5.0 # second
     emergency_repeat_period: 180.0 # second
     accept_start: 5.0 # second
