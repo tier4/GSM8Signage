@@ -12,6 +12,7 @@
 
   <depend>autoware_auto_system_msgs</depend>
   <depend>rclpy</depend>
+  <depend>signage_fms_client</depend>
   <depend>tier4_api_msgs</depend>
   <depend>tier4_debug_msgs</depend>
   <depend>tier4_external_api_msgs</depend>
