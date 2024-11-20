@@ -5,11 +5,11 @@ Rectangle {
     id: emergencyStopView
     width: viewController.monitor_width
     height: viewController.monitor_height
-    color: "#f60000"
+    color: "#ffffff"
     Text {
         id: emergencyStopText
-        color: "#ffffff"
-        text: qsTr("緊急停止中")
+        color: "#000000"
+        text: qsTr("安全のため停止中")
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.verticalCenter
         horizontalAlignment: Text.AlignHCenter
@@ -21,7 +21,7 @@ Rectangle {
 
     Text {
         id: emergencyStopEnText
-        color: "#ffffff"
+        color: "#000000"
         text: qsTr("Emergency Stop")
         anchors.top: emergencyStopText.bottom
         anchors.horizontalCenter: parent.horizontalCenter

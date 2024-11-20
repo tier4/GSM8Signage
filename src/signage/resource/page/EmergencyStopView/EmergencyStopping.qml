@@ -5,10 +5,10 @@ Rectangle {
     id: emergencyStoppingView
     width: viewController.monitor_width
     height: viewController.monitor_height
-    color: "#f60000"
+    color: "#ffffff"
     Text {
         id: emergencyStoppingText
-        color: "#ffffff"
+        color: "#000000"
         text: qsTr("只今オペレータ対応中です")
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.verticalCenter
@@ -21,7 +21,7 @@ Rectangle {
 
     Text {
         id: emergencyStoppingEnText
-        color: "#ffffff"
+        color: "#000000"
         text: qsTr("Now the operator is working on it")
         anchors.top: emergencyStoppingText.bottom
         anchors.horizontalCenter: parent.horizontalCenter
