@@ -20,7 +20,7 @@ Window {
     }
 
     Disconnected {
-        id: disconnected
+        id: disconnectedView
         visible: viewController.view_mode === "disconnected"
     }
 
