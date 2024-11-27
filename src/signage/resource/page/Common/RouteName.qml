@@ -11,7 +11,7 @@ Item {
         text: viewController.route_name[0] ? viewController.route_name[0] : "行き先案内"
         anchors.bottom: busRouteTextEn.top
         anchors.horizontalCenter: parent.horizontalCenter
-        font.pointSize: 65*viewController.size_ratio
+        font.pointSize: 80*viewController.size_ratio
         font.bold: true
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
