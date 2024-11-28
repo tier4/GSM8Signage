@@ -5,6 +5,7 @@ import serial
 import json
 import os
 from std_srvs.srv import SetBool
+from std_msgs.msgs import Bool
 from ament_index_python.packages import get_package_share_directory
 import external_signage.packet_tools as packet_tools
 import uuid
@@ -121,6 +122,18 @@ class ExternalSignage:
             "back": self._load_display_data(self.protocol.back, package_path),
             "side": self._load_display_data(self.protocol.side, package_path),
         }
+
+        api_qos = rclpy.qos.QoSProfile(
+            history=rclpy.qos.QoSHistoryPolicy.KEEP_LAST,
+            depth=10,
+            reliability=rclpy.qos.QoSReliabilityPolicy.RELIABLE,
+            durability=rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL,
+        )
+
+        node.create_service(SetBool, "/signage/trigger_external", self.trigger_external_signage)
+        node.create_service(SetBool, "/signage/mode_change", self.experiment_set)
+        self.mode_status_pub_ = node.create_publisher(Bool, "/signage/mode_status", api_qos)
+
         self._settings_file = "/home/" + os.environ.get("USER") + "/settings.json"
         if os.path.exists(self._settings_file):
             with open(self._settings_file, "r") as f:
@@ -131,10 +144,14 @@ class ExternalSignage:
                 json.dump(self._settings, f, indent=4)
 
         if self._settings.get("in_experiment", False):
+            self.pub_mode_status(True)
             self.display_signage("experiment")
+        else:
+            self.pub_mode_status(False)
 
-        node.create_service(SetBool, "/signage/trigger_external", self.trigger_external_signage)
-        node.create_service(SetBool, "/signage/mode_change", self.experiment_set)
+    def pub_mode_status(self, status):
+        msg = Bool()
+        msg.data = status
 
     def _load_display_data(self, display, package_path):
         auto_path = package_path + f"automatic_{display.width}x{display.height}.td5"
@@ -172,9 +189,11 @@ class ExternalSignage:
 
     def experiment_set(self, request, response):
         if request.data:
+            self.pub_mode_status(True)
             self._settings["in_experiment"] = True
             self.display_signage("experiment")
         else:
+            self.pub_mode_status(False)
             self._settings["in_experiment"] = False
             self.display_signage("null")
 
