@@ -3,9 +3,9 @@
 # This Python file uses the following encoding: utf-8
 
 import os
-import requests
 import json
 from datetime import datetime
+
 import signage.signage_utils as utils
 from tier4_external_api_msgs.msg import DoorStatus
 from autoware_adapi_v1_msgs.msg import (
@@ -33,14 +33,6 @@ class RouteHandler:
         self._autoware = autoware_interface
         self._parameter = parameter_interface.parameter
         self._service_interface = ros_service_interface
-        self.AUTOWARE_IP = os.getenv("AUTOWARE_IP", "localhost")
-        self._fms_payload = {
-            "method": "get",
-            "url": "https://"
-            + os.getenv("FMS_URL", "fms.web.auto")
-            + "/v1/projects/{project_id}/environments/{environment_id}/vehicles/{vehicle_id}/active_schedule",
-            "body": {},
-        }
         self._schedule_details = utils.init_ScheduleDetails()
         self._display_details = utils.init_DisplayDetails()
         self._current_task_details = utils.init_CurrentTask()
@@ -169,15 +161,7 @@ class RouteHandler:
 
     def process_station_list_from_fms(self, force_update=False):
         try:
-            respond = requests.post(
-                "http://{}:4711/v1/services/order".format(self.AUTOWARE_IP),
-                json=self._fms_payload,
-                timeout=5,
-            )
-
-            data = json.loads(respond.text)
-            self._fms_check_time = self._node.get_clock().now()
-
+            data = json.loads(self._autoware.information.active_schedule)
             if not data:
                 self._schedule_details = utils.init_ScheduleDetails()
                 self._display_details = utils.init_DisplayDetails()
@@ -186,6 +170,8 @@ class RouteHandler:
             elif utils.check_schedule_update(self._schedule_details, data) and not force_update:
                 self._fms_check_time = self._node.get_clock().now()
                 raise Exception("same schedule, skip")
+
+            self._fms_check_time = self._node.get_clock().now()
 
             self._schedule_details = utils.update_schedule_details(data)
 
@@ -384,7 +370,11 @@ class RouteHandler:
             self._viewController.next_station_list = self._display_details.next_station_list
             self._viewController.display_phrase = self._display_phrase
 
-            if self._autoware.is_disconnected:
+            if (
+                self._autoware.is_disconnected
+                and not self._parameter.ignore_disconnected
+                and not self._parameter.ignore_emergency
+            ):
                 view_mode = "emergency_stopped"
             elif (
                 not self._autoware.information.autoware_control
