@@ -4,8 +4,9 @@ import time
 import serial
 import json
 import os
+import rclpy
 from std_srvs.srv import SetBool
-from std_msgs.msgs import Bool
+from std_msgs.msg import Bool
 from ament_index_python.packages import get_package_share_directory
 import external_signage.packet_tools as packet_tools
 import uuid
@@ -114,7 +115,8 @@ class ExternalSignage:
             )
             self.parser = packet_tools.Parser(self.bus)
             self._external_signage_available = True
-        except:
+        except Exception as e:
+            self.node.get_logger().error(str(e))
             self._external_signage_available = False
 
         self.displays = {
@@ -181,24 +183,32 @@ class ExternalSignage:
         if self._settings["in_experiment"]:
             return response
 
-        if request.data:
-            self.display_signage("auto")
-        else:
-            self.display_signage("null")
+        try:
+            if request.data:
+                self.display_signage("auto")
+            else:
+                self.display_signage("null")
+            response.success = True
+        except Exception as e:
+            self.node.get_logger().error(str(e))
         return response
 
     def experiment_set(self, request, response):
-        if request.data:
-            self.pub_mode_status(True)
-            self._settings["in_experiment"] = True
-            self.display_signage("experiment")
-        else:
-            self.pub_mode_status(False)
-            self._settings["in_experiment"] = False
-            self.display_signage("null")
+        try:
+            if request.data:
+                self.pub_mode_status(True)
+                self._settings["in_experiment"] = True
+                self.display_signage("experiment")
+            else:
+                self.pub_mode_status(False)
+                self._settings["in_experiment"] = False
+                self.display_signage("null")
 
-        with open(self._settings_file, "w") as f:
-            json.dump(self._settings, f, indent=4)
+            with open(self._settings_file, "w") as f:
+                json.dump(self._settings, f, indent=4)
+            response.success = True
+        except Exception as e:
+            self.node.get_logger().error(str(e))
         return response
 
     def display_signage(self, display_file):
