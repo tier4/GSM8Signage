@@ -432,7 +432,7 @@ class RouteHandler:
                 and not self._parameter.ignore_disconnected
                 and not self._parameter.ignore_emergency
             ):
-                view_mode = "emergency_stopped"
+                view_mode = "disconnected"
             elif (
                 not self._autoware.information.autoware_control
                 and not self._parameter.ignore_manual_driving
