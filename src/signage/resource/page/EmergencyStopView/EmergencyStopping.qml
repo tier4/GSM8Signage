@@ -9,7 +9,7 @@ Rectangle {
     Text {
         id: emergencyStoppingText
         color: "#000000"
-        text: qsTr("只今オペレータ対応中です")
+        text: qsTr("安全確認のため停車しています")
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.verticalCenter
         horizontalAlignment: Text.AlignHCenter
@@ -22,12 +22,12 @@ Rectangle {
     Text {
         id: emergencyStoppingEnText
         color: "#000000"
-        text: qsTr("Now the operator is working on it")
+        text: qsTr("Emergency Stop")
         anchors.top: emergencyStoppingText.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        font.pointSize: 70*viewController.size_ratio
+        font.pointSize: 80*viewController.size_ratio
         font.bold: true
         elide: Text.ElideMiddle
     }
