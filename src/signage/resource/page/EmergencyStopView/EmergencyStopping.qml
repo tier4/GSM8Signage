@@ -22,7 +22,7 @@ Rectangle {
     Text {
         id: emergencyStoppingEnText
         color: "#000000"
-        text: qsTr("Emergency Stop")
+        text: qsTr("Stopping for safety check")
         anchors.top: emergencyStoppingText.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         horizontalAlignment: Text.AlignHCenter
