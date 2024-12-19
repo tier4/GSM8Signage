@@ -145,11 +145,11 @@ class ExternalSignage:
             with open(self._settings_file, "r") as f:
                 self._settings = json.load(f)
         else:
-            self._settings = {"in_experiment": False}
+            self._settings = {"in_experiment": True}
             with open(self._settings_file, "w") as f:
                 json.dump(self._settings, f, indent=4)
 
-        if self._settings.get("in_experiment", False):
+        if self._settings.get("in_experiment", True):
             self.pub_mode_status(True)
             self.display_signage("experiment")
         else:
