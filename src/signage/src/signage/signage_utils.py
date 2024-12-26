@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # This Python file uses the following encoding: utf-8
 
-DEFAULT_ROUTE_NAME = ["行き先案内", "Route Information"]
+DEFAULT_ROUTE_NAME = ["自動運転中", "Auto Driving"]
 DEFAULT_DEPARTURE_NAME = "出発点; Start"
 DEFAULT_ARRIVAL_NAME = "終点; Last Stop"
 PREVIOUS_STATION_INDEX = -1  # TODO: check whether is -1 or 0
